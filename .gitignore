@@ -1,0 +1,34 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-file.txt
+.tox/
+.mypy_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+
+*.kv.bak
+*.kv.tmp
+*.log
+
+.buildozer/
+build/
+bin/
+
+library.db
+
+.idea/             # PyCharm/IntelliJ
+*.iml
+.vscode/           # VS Code
+*.sublime-project  # Sublime Text
+*.sublime-workspace
+
+.DS_Store
+Thumbs.db
