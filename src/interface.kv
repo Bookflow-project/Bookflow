@@ -30,3 +30,68 @@ ScreenManager:
         Label:
             text: 'App v1.0'
             # ... (стили) ...
+# ... (Остальные определения виджетов и экранов) ...
+
+
+<LoginScreen>:
+    name: 'login'
+    login_input: login_field
+    pass_input: pass_field
+    error_label: err_lbl
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: None, None
+            width: 400
+            height: 500
+            spacing: 10
+            padding: 20
+            Label:
+                text: 'Вход в аккаунт'
+                font_size: 32
+                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: 60
+                bold: True
+            Label:
+                id: err_lbl
+                text: ''
+                color: 0.8, 0, 0, 1
+                size_hint_y: None
+                height: 30
+            Widget:
+                size_hint_y: 0.2
+            AuthButton:
+                text: 'Войти'
+                background_color: 0.7, 0.8, 0.7, 1
+                on_release: root.do_login()
+            Button:
+                text: 'Выйти'
+                background_normal: ''
+                background_color: 0.9, 0.6, 0.6, 1
+                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: 50
+                on_release:
+                    app.root.current = 'welcome'
+                    root.reset()
+                canvas.before:
+                    Color:
+                        rgba: 0.9, 0.6, 0.6, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [8,]
+                    Color:
+                        rgba: 0, 0, 0, 1
+                    Line:
+                        width: 1.2
+                        rounded_rectangle: self.x, self.y, self.width, self.height, 8
