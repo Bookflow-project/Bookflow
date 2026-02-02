@@ -35,6 +35,9 @@ class RegisterScreen(Screen):
         email = self.email_input.text
         login = self.login_input.text
         password = self.pass_input.text
+        if not login or not password:
+            self.error_label.text = "Заполните поля"
+            return
         success, result = db.register_user(email, login, password)
         if success:
             _, uid = db.login_user(login, password)
