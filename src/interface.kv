@@ -32,6 +32,65 @@ ScreenManager:
             on_release: app.root.current = 'register' # Переход (см. SUB-5.2)
         Label:
             text: 'App v1.0'
+            # ... (стили) ...
+# ... (Остальные определения виджетов и экранов) ...
+
+<RegisterScreen>:
+    name: 'register'
+    email_input: r_email
+    login_input: r_login
+    pass_input: r_pass
+    error_label: r_err
+    # ... (AnchorLayout и внешний BoxLayout) ...
+        BoxLayout:
+            orientation: 'vertical'
+            # ... (Настройки размера и заголовка) ...
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Адрес эл. почты'
+                    # ... (стили) ...
+                AuthInput:
+                    id: r_email
+                    hint_text: 'Введите почту'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Логин'
+                    # ... (стили) ...
+                AuthInput:
+                    id: r_login
+                    hint_text: 'Придумайте логин'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Пароль'
+                    # ... (стили) ...
+                AuthInput:
+                    id: r_pass
+                    hint_text: 'Придумайте пароль'
+                    password: True
+            Label:
+                id: r_err # Метка для ошибок
+                text: ''
+                color: 0.8, 0, 0, 1
+                size_hint_y: None
+                height: 30
+            Widget:
+                size_hint_y: 0.2
+            AuthButton:
+                text: 'Зарегистрироваться'
+                background_color: 0.6, 0.7, 0.9, 1
+                on_release: root.do_register() # Вызов логики регистрации
+            # ... (Кнопка "Выйти") ...
+
 
 <LoginScreen>:
     name: 'login'
