@@ -13,6 +13,22 @@ from kivy.uix.filechooser import FileChooserListView
 from kivy.clock import Clock
 from kivy.animation import Animation
 
+from database import DBManager
+
+db = DBManager()
+
+class LoginScreen(Screen):
+    def do_login(self):
+        login = self.login_input.text
+        password = self.pass_input.text
+        success, result = db.login_user(login, password)
+        if success:
+            App.get_running_app().current_user_id = result
+            self.manager.get_screen('library').load_books(force=True)
+            self.manager.current = 'library'
+        #TO DO reset
+        else:
+            self.error_label.text = "Ошибка входа"
 
 class BookFlowApp(App):
     current_user_id = None
