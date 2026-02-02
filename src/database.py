@@ -44,5 +44,16 @@ class DBManager:
         conn.close()
 
     def register_user(self, email, login, password):
-        # TO DO
-        pass
+        pwd_hash = hashlib.sha256(password.encode()).hexdigest()
+        try:
+            conn = self.connect()
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO users (email, login, password_hash) VALUES (?, ?, ?)", 
+                           (email, login, pwd_hash))
+            conn.commit()
+            user_id = cursor.lastrowid
+            conn.close()
+            return True, user_id
+        except sqlite3.IntegrityError:
+            conn.close()
+            return False, "Логин занят"
