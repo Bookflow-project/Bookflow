@@ -13,6 +13,31 @@ from kivy.uix.filechooser import FileChooserListView
 from kivy.clock import Clock
 from kivy.animation import Animation
 
+from database import DBManager
+
+db = DBManager()
+
+class RegisterScreen(Screen):
+    def do_register(self):
+        email = self.email_input.text
+        login = self.login_input.text
+        password = self.pass_input.text
+        if not login or not password:
+            self.error_label.text = "Заполните поля"
+            return
+        success, result = db.register_user(email, login, password)
+        if success:
+            _, uid = db.login_user(login, password)
+            App.get_running_app().current_user_id = uid
+            self.manager.get_screen('library').load_books(force=True)
+            self.manager.current = 'library'
+            self.reset()
+        else:
+            self.error_label.text = result
+    def reset(self):
+        self.email_input.text = ""
+        self.login_input.text = ""
+        self.pass_input.text = ""
 
 class BookFlowApp(App):
     current_user_id = None

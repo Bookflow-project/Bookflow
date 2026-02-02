@@ -42,3 +42,7 @@ class DBManager:
         ''')
         conn.commit()
         conn.close()
+
+    def register_user(self, email, login, password):
+        # TO DO
+        pass
