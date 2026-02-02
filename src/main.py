@@ -14,6 +14,15 @@ from kivy.clock import Clock
 from kivy.animation import Animation
 
 
+class RegisterScreen(Screen):
+    def do_register(self):
+        email = self.email_input.text
+        login = self.login_input.text
+        password = self.pass_input.text
+        if not login or not password:
+            self.error_label.text = "Заполните поля"
+            return
+
 class BookFlowApp(App):
     current_user_id = None
     def build(self):
