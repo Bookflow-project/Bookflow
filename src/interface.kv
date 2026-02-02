@@ -12,7 +12,6 @@ ScreenManager:
         orientation: 'vertical'
         padding: 50
         spacing: 20
-        # ... (Фоновый цвет) ...
         Label:
             text: 'BookFlow' # Заголовок
             font_size: 48
@@ -20,18 +19,19 @@ ScreenManager:
             bold: True
         Widget: # Пустой виджет для растяжения
         AuthButton:
-            text: 'Войти' # Кнопка 1
+            text: 'Войти'
             background_color: 0.7, 0.8, 0.7, 1
-            on_release: app.root.current = 'login' # Переход (см. SUB-5.2)
+            on_release: app.root.current = 'login' # Переход на LoginScreen
+        AuthButton:
+            text: 'Зарегистрироваться'
+            background_color: 0.6, 0.7, 0.9, 1
+            on_release: app.root.current = 'register'
         AuthButton:
             text: 'Зарегистрироваться' # Кнопка 2
             background_color: 0.6, 0.7, 0.9, 1
             on_release: app.root.current = 'register' # Переход (см. SUB-5.2)
         Label:
             text: 'App v1.0'
-            # ... (стили) ...
-# ... (Остальные определения виджетов и экранов) ...
-
 
 <LoginScreen>:
     name: 'login'
