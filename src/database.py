@@ -43,6 +43,15 @@ class DBManager:
         conn.commit()
         conn.close()
 
+    def login_user(self, login, password):
+        pwd_hash = hashlib.sha256(password.encode()).hexdigest()
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id FROM users WHERE login = ? AND password_hash = ?", (login, pwd_hash))
+        user = cursor.fetchone()
+        conn.close()
+        return (True, user['user_id']) if user else (False, None)
+
     def register_user(self, email, login, password):
         # TO DO
         pass
