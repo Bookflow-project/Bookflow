@@ -22,9 +22,6 @@ class RegisterScreen(Screen):
         email = self.email_input.text
         login = self.login_input.text
         password = self.pass_input.text
-        if not login or not password:
-            self.error_label.text = "Заполните поля"
-            return
         success, result = db.register_user(email, login, password)
         if success:
             _, uid = db.login_user(login, password)
@@ -34,10 +31,6 @@ class RegisterScreen(Screen):
             self.reset()
         else:
             self.error_label.text = result
-    def reset(self):
-        self.email_input.text = ""
-        self.login_input.text = ""
-        self.pass_input.text = ""
 
 class BookFlowApp(App):
     current_user_id = None
