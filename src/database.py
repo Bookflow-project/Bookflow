@@ -43,15 +43,6 @@ class DBManager:
         conn.commit()
         conn.close()
 
-    def login_user(self, login, password):
-        pwd_hash = hashlib.sha256(password.encode()).hexdigest()
-        conn = self.connect()
-        cursor = conn.cursor()
-        cursor.execute("SELECT user_id FROM users WHERE login = ? AND password_hash = ?", (login, pwd_hash))
-        user = cursor.fetchone()
-        conn.close()
-        return (True, user['user_id']) if user else (False, None)
-
     def register_user(self, email, login, password):
         pwd_hash = hashlib.sha256(password.encode()).hexdigest()
         try:
@@ -66,3 +57,55 @@ class DBManager:
         except sqlite3.IntegrityError:
             conn.close()
             return False, "Логин занят"
+
+    def login_user(self, login, password):
+        pwd_hash = hashlib.sha256(password.encode()).hexdigest()
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id FROM users WHERE login = ? AND password_hash = ?", (login, pwd_hash))
+        user = cursor.fetchone()
+        conn.close()
+        return (True, user['user_id']) if user else (False, None)
+
+    def add_book(self, user_id, title, author, path):
+        try:
+            conn = self.connect()
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO books (title, author, file_path, user_id, current_page) VALUES (?, ?, ?, ?, 0)",
+                        (title, author, path, user_id))
+            conn.commit()
+            conn.close()
+            return True
+        except sqlite3.IntegrityError:
+            conn.close()
+            return False
+
+    def get_user_books(self, user_id):
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM books WHERE user_id = ?", (user_id,))
+        books = cursor.fetchall()
+        conn.close()
+        return books
+
+    def delete_book(self, book_id):
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM books WHERE book_id = ?", (book_id,))
+        conn.commit()
+        conn.close()
+
+    def update_book_progress(self, book_id, page_num):
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE books SET current_page = ? WHERE book_id = ?", (page_num, book_id))
+        conn.commit()
+        conn.close()
+
+    def get_book_progress(self, book_id):
+        conn = self.connect()
+        cursor = conn.cursor()
+        cursor.execute("SELECT current_page FROM books WHERE book_id = ?", (book_id,))
+        result = cursor.fetchone()
+        conn.close()
+        return result['current_page'] if result else 0
