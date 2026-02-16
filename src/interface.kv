@@ -1,3 +1,40 @@
+<AuthInput@TextInput>:
+    multiline: False
+    font_size: 16
+    size_hint_y: None
+    height: 40
+    padding: [10, 10]
+    background_normal: ''
+    background_color: 1, 1, 1, 1
+    foreground_color: 0, 0, 0, 1
+    cursor_color: 0, 0, 0, 1
+    canvas.after:
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 1.1
+            rectangle: self.x, self.y, self.width, self.height
+
+<AuthButton@Button>:
+    font_size: 18
+    size_hint_y: None
+    height: 50
+    background_normal: ''
+    background_down: ''
+    color: 0, 0, 0, 1
+    canvas.before:
+        Color:
+            rgba: self.background_color if self.state == 'normal' else (0.8, 0.8, 0.8, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [8,]
+        Color:
+            rgba: 0, 0, 0, 1
+        Line:
+            width: 1.2
+            rounded_rectangle: self.x, self.y, self.width, self.height, 8
+
 ScreenManager:
     id: screen_manager
     WelcomeScreen:
@@ -6,91 +43,88 @@ ScreenManager:
     LibraryScreen:
     ReaderScreen:
 
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        padding: 0
+        spacing: 0
+        
+        FileChooserIconView:
+            id: filechooser
+            path: root.path
+            filters: ['*.pdf', '*.epub', '*.PDF', '*.EPUB']
+            
+            bar_width: 10
+            scroll_type: ['bars', 'content']
+            bar_inactive_color: 0, 0, 0, 0 
+            
+            canvas.before:
+                Color:
+                    rgba: 0.2, 0.2, 0.2, 1 
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 20
+            padding: [15, 10]
+            
+            canvas.before:
+                Color:
+                    rgba: 0.2, 0.2, 0.2, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: "Отмена"
+                background_normal: ''
+                background_color: 0.8, 0.4, 0.4, 1
+                color: 1, 1, 1, 1
+                on_release: root.cancel()
+
+            Button:
+                text: "Загрузить"
+                background_normal: ''
+                background_color: 0.5, 0.7, 0.5, 1
+                color: 1, 1, 1, 1
+                on_release: root.load(filechooser.path, filechooser.selection)
+
 <WelcomeScreen>:
     name: 'welcome'
     BoxLayout:
         orientation: 'vertical'
         padding: 50
         spacing: 20
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Label:
-            text: 'BookFlow' # Заголовок
+            text: 'BookFlow'
             font_size: 48
             color: 0, 0, 0, 1
             bold: True
-        Widget: # Пустой виджет для растяжения
+        Widget:
         AuthButton:
             text: 'Войти'
             background_color: 0.7, 0.8, 0.7, 1
-            on_release: app.root.current = 'login' # Переход на LoginScreen
+            on_release: app.root.current = 'login'
         AuthButton:
             text: 'Зарегистрироваться'
             background_color: 0.6, 0.7, 0.9, 1
             on_release: app.root.current = 'register'
-        AuthButton:
-            text: 'Зарегистрироваться' # Кнопка 2
-            background_color: 0.6, 0.7, 0.9, 1
-            on_release: app.root.current = 'register' # Переход (см. SUB-5.2)
         Label:
             text: 'App v1.0'
-            # ... (стили) ...
-# ... (Остальные определения виджетов и экранов) ...
-
-<RegisterScreen>:
-    name: 'register'
-    email_input: r_email
-    login_input: r_login
-    pass_input: r_pass
-    error_label: r_err
-    # ... (AnchorLayout и внешний BoxLayout) ...
-        BoxLayout:
-            orientation: 'vertical'
-            # ... (Настройки размера и заголовка) ...
-
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint_y: None
-                height: 70
-                Label:
-                    text: 'Адрес эл. почты'
-                    # ... (стили) ...
-                AuthInput:
-                    id: r_email
-                    hint_text: 'Введите почту'
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint_y: None
-                height: 70
-                Label:
-                    text: 'Логин'
-                    # ... (стили) ...
-                AuthInput:
-                    id: r_login
-                    hint_text: 'Придумайте логин'
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint_y: None
-                height: 70
-                Label:
-                    text: 'Пароль'
-                    # ... (стили) ...
-                AuthInput:
-                    id: r_pass
-                    hint_text: 'Придумайте пароль'
-                    password: True
-            Label:
-                id: r_err # Метка для ошибок
-                text: ''
-                color: 0.8, 0, 0, 1
-                size_hint_y: None
-                height: 30
-            Widget:
-                size_hint_y: 0.2
-            AuthButton:
-                text: 'Зарегистрироваться'
-                background_color: 0.6, 0.7, 0.9, 1
-                on_release: root.do_register() # Вызов логики регистрации
-            # ... (Кнопка "Выйти") ...
-
+            color: 0.5, 0.5, 0.5, 1
+            size_hint_y: None
+            height: 30
 
 <LoginScreen>:
     name: 'login'
@@ -120,6 +154,37 @@ ScreenManager:
                 size_hint_y: None
                 height: 60
                 bold: True
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Логин'
+                    color: 0, 0, 0, 1
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'bottom'
+                    size_hint_y: None
+                    height: 25
+                AuthInput:
+                    id: login_field
+                    hint_text: 'Введите логин'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Пароль'
+                    color: 0, 0, 0, 1
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'bottom'
+                    size_hint_y: None
+                    height: 25
+                AuthInput:
+                    id: pass_field
+                    hint_text: 'Введите пароль'
+                    password: True
             Label:
                 id: err_lbl
                 text: ''
@@ -133,13 +198,13 @@ ScreenManager:
                 background_color: 0.7, 0.8, 0.7, 1
                 on_release: root.do_login()
             Button:
-                text: 'Выйти'
+                text: 'Выйти' 
                 background_normal: ''
                 background_color: 0.9, 0.6, 0.6, 1
                 color: 0, 0, 0, 1
                 size_hint_y: None
                 height: 50
-                on_release:
+                on_release: 
                     app.root.current = 'welcome'
                     root.reset()
                 canvas.before:
@@ -154,3 +219,378 @@ ScreenManager:
                     Line:
                         width: 1.2
                         rounded_rectangle: self.x, self.y, self.width, self.height, 8
+
+<RegisterScreen>:
+    name: 'register'
+    email_input: r_email
+    login_input: r_login
+    pass_input: r_pass
+    error_label: r_err
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: None, None
+            width: 400
+            height: 600
+            spacing: 10
+            padding: 20
+            Label:
+                text: 'Регистрация'
+                font_size: 32
+                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: 60
+                bold: True
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Адрес эл. почты'
+                    color: 0, 0, 0, 1
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'bottom'
+                    size_hint_y: None
+                    height: 25
+                AuthInput:
+                    id: r_email
+                    hint_text: 'Введите почту'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Логин'
+                    color: 0, 0, 0, 1
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'bottom'
+                    size_hint_y: None
+                    height: 25
+                AuthInput:
+                    id: r_login
+                    hint_text: 'Придумайте логин'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 70
+                Label:
+                    text: 'Пароль'
+                    color: 0, 0, 0, 1
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'bottom'
+                    size_hint_y: None
+                    height: 25
+                AuthInput:
+                    id: r_pass
+                    hint_text: 'Придумайте пароль'
+                    password: True
+            Label:
+                id: r_err
+                text: ''
+                color: 0.8, 0, 0, 1
+                size_hint_y: None
+                height: 30
+            Widget:
+                size_hint_y: 0.2
+            AuthButton:
+                text: 'Зарегистрироваться'
+                background_color: 0.6, 0.7, 0.9, 1
+                on_release: root.do_register()
+            Button:
+                text: 'Выйти' 
+                background_normal: ''
+                background_color: 0.9, 0.6, 0.6, 1
+                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: 50
+                on_release: 
+                    app.root.current = 'welcome'
+                    root.reset()
+                canvas.before:
+                    Color:
+                        rgba: 0.9, 0.6, 0.6, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [8,]
+                    Color:
+                        rgba: 0, 0, 0, 1
+                    Line:
+                        width: 1.2
+                        rounded_rectangle: self.x, self.y, self.width, self.height, 8
+
+<LibraryScreen>:
+    name: 'library'
+    book_list: books_container
+    search_input: search_field
+
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 70
+            padding: [20, 15]
+            spacing: 15
+            canvas.before:
+                Color:
+                    rgba: 1, 1, 1, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            TextInput:
+                id: search_field
+                hint_text: 'Поиск по названию...'
+                multiline: False
+                font_size: 16
+                padding: [15, 10]
+                background_normal: ''
+                background_color: 0.95, 0.95, 0.95, 1
+                on_text: root.filter_books(self.text)
+                canvas.after:
+                    Color:
+                        rgba: 0, 0, 0, 1
+                    Line:
+                        width: 1.1
+                        rounded_rectangle: self.x, self.y, self.width, self.height, 15
+
+            Button:
+                text: '+'
+                background_normal: ''
+                background_color: 0.7, 0.8, 0.7, 1
+                color: 0, 0, 0, 1
+                size_hint_x: None
+                width: 50
+                on_release: root.show_add_dialog()
+            Button:
+                text: 'Выход'
+                background_normal: ''
+                background_color: 0.9, 0.6, 0.6, 1
+                color: 0, 0, 0, 1
+                size_hint_x: None
+                width: 70
+                on_release: app.root.current = 'welcome'
+
+        Label:
+            text: 'Моя библиотека:'
+            color: 0, 0, 0, 1
+            font_size: 20
+            bold: True
+            size_hint_y: None
+            height: 40
+            text_size: self.size
+            halign: 'left'
+            padding_x: 20
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            
+            StackLayout:
+                id: books_container
+                orientation: 'lr-tb'
+                padding: [30, 20, 30, 20]
+                spacing: 30
+                size_hint_y: None
+                height: self.minimum_height
+
+
+<BookItem>:
+    orientation: 'vertical'
+    size_hint: None, None
+    width: 150
+    height: 260
+    spacing: 5
+    
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    RelativeLayout:
+        size_hint_y: None
+        height: 220
+        
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: 0, 0
+                size: self.size
+            Color:
+                rgba: 0, 0, 0, 1
+            Line:
+                width: 1.5
+                rectangle: 0, 0, self.width, self.height
+
+        Image:
+            source: root.cover_source
+            texture: root.cover_texture
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 0.95, 0.95
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        Label:
+            text: root.title if not root.cover_texture else ''
+            color: 0, 0, 0, 1
+            text_size: self.width - 10, None
+            halign: 'center'
+            valign: 'middle'
+            font_size: 12
+            opacity: 1 if not root.cover_texture else 0
+
+        Button:
+            background_normal: ''
+            background_down: ''
+            background_color: 0, 0, 0, 0
+            size_hint: 1, 1
+            pos_hint: {'x': 0, 'y': 0}
+            on_release: root.open_book()
+
+        Button:
+            text: 'X'
+            bold: True
+            color: 1, 1, 1, 1
+            background_normal: ''
+            background_color: 0.8, 0.2, 0.2, 1
+            size_hint: None, None
+            size: 30, 30
+            pos_hint: {'right': 1, 'top': 1}
+            on_release: root.delete_book()
+
+    Label:
+        text: root.title
+        color: 0, 0, 0, 1
+        font_size: 14
+        size_hint_y: None
+        height: 35
+        text_size: self.width, None
+        halign: 'center'
+        valign: 'top'
+        max_lines: 2
+        shorten: True
+        shorten_from: 'right'
+
+
+<ReaderScreen>:
+    name: 'reader'
+    book_image: img_display
+    page_label: lbl_page
+    book_scatter: scatter_view
+
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.9, 0.9, 0.9, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        StencilView:
+            Scatter:
+                id: scatter_view
+                do_rotation: False
+                do_translation: True
+                do_scale: True
+                scale_min: 1
+                scale_max: 5
+                auto_bring_to_front: False
+                size_hint: None, None
+                size: self.parent.size
+
+                ClickableImage:
+                    id: img_display
+                    size: self.parent.size
+                    allow_stretch: True
+                    keep_ratio: True
+                    on_release: root.toggle_controls()
+
+        AnchorLayout:
+            id: top_bar
+            anchor_x: 'left'
+            anchor_y: 'top'
+            size_hint_y: None
+            height: 60
+            padding: [20, 10]
+            
+            Button:
+                text: '< В библиотеку'
+                font_size: 16
+                color: 1, 1, 1, 1
+                size_hint: None, None
+                size: 140, 40
+                background_normal: ''
+                background_down: ''
+                background_color: 0, 0, 0, 0 
+                on_release: root.close_book()
+                canvas.before:
+                    Color:
+                        rgba: 0.2, 0.2, 0.2, 0.7
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [20,]
+
+        AnchorLayout:
+            id: bottom_bar
+            anchor_x: 'center'
+            anchor_y: 'bottom'
+            size_hint_y: None
+            height: 80
+            padding: 20
+
+            BoxLayout:
+                size_hint: None, None
+                size: 300, 50
+                spacing: 20
+                canvas.before:
+                    Color:
+                        rgba: 0.2, 0.2, 0.2, 0.7
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [25,]
+
+                Button:
+                    text: '<'
+                    font_size: 24
+                    bold: True
+                    background_normal: ''
+                    background_color: 0, 0, 0, 0
+                    on_release: root.prev_page()
+
+                Label:
+                    id: lbl_page
+                    text: '0 / 0'
+                    color: 1, 1, 1, 1
+                    bold: True
+                    font_size: 16
+
+                Button:
+                    text: '>'
+                    font_size: 24
+                    bold: True
+                    background_normal: ''
+                    background_color: 0, 0, 0, 0
+                    on_release: root.next_page()
